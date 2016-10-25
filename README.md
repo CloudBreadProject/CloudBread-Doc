@@ -23,32 +23,35 @@ CloudBread API 레퍼런스 : http://cloudbreadproject.github.io/
 ###1. 모바일 게임을 위한 로직
 모바일 게임에 필요한 100여가지의 다양한 behavior 들을 구현해 API를 호출해 즉시 사용가능하도록 로직 구현  
 [CloudBread 설치가이드 문서 참조](https://github.com/CloudBreadProject/CloudBread/wiki/Home-kor)  
-[CloudBread API 가이드 문서 참조](https://github.com/CloudBreadProject/CloudBread/wiki/CloudBread-behaviors-list)
+[CloudBread API 가이드 문서 참조](https://github.com/CloudBreadProject/CloudBread/wiki/CloudBread-behaviors-list)  
 
 ###2. PaaS 클라우드 기반 게임 서버 (엔진)
 CloudBread는 PaaS/DaaS 기반 게임서버로 모바일 게임 개발자(사)가 클라이언트   개발에만 집중할 수 있도록 관리 포인트를 최소화할 수 있음  
-[CloudBread 캠프 아키텍처 가이드 문서 참조](https://github.com/CloudBreadProject/CloudBread-Doc/tree/master/camp-docs)
+[CloudBread 캠프 아키텍처 가이드 문서 참조](https://github.com/CloudBreadProject/CloudBread-Doc/tree/master/camp-docs)  
 
 ###3. 개발/테스트/배포 통합환경
-클라우드 서비스가 제공하는 환경을 모바일 게임 개발사가 더 쉽게 활용 가능하도록 도움  
-개발자가 개발/게시/배포 할 경우 익숙한 git/github을 이용 가능하며, node.js로 개발된 Admin-Web이나 Socket 등의 프로젝트도 즉시 App Service로 배포 가능하도록 기본 PaaS의 기능으로 제공  
-[CloudBread ARM 배포 Repo](https://github.com/CloudBreadProject/CloudBread-ARM)
-[App Service의 git/github 등 통합 배포](https://azure.microsoft.com/ko-kr/documentation/articles/web-sites-deploy//)
+클라우드 서비스가 제공하는 환경을 모바일 게임 개발사가 더 쉽게 활용 가능한 플랫폼 제공  
+개발자가 개발 / 게시 / 배포 할 경우 익숙한 git/github을 이용 가능하며, node.js로 개발된 Admin-Web이나 Socket 등의 프로젝트도 즉시 App Service로 배포 가능하도록 기본 PaaS의 기능으로 제공  
+[CloudBread ARM 배포 Repo](https://github.com/CloudBreadProject/CloudBread-ARM)  
+[App Service의 git/github 등 통합 배포](https://azure.microsoft.com/ko-kr/documentation/articles/web-sites-deploy//)  
 
 ###4. 서비스 규모에 따른 클라이언트 게임변경 없음
-모바일 게임 클라이언트는 제공되는 API를 호출하면 되며, 무제한에 가까운 클라우드 기반 API 처리 기능을 그대로 활용   가능  
-이미 카카오 입점 게임 등의 stress test 등을 진행했으며, 클라우드 PaaS App Service의 scale-up과 scale-out을 활용해 무제한에 가까운 인스턴스를 활용 가능. 지난 Unity United 행사에서 jmetor 및 cloud 기반 성능 테스트 관련 시연을 수행했고, 6000RPS 이상의 처리 성능 기본 제공  
+모바일 게임 클라이언트는 제공되는 API를 호출하면 되며, 무제한에 가까운 클라우드 기반 API 처리 기능을 그대로 활용 가능.  
+이미 카카오 입점 게임 등의 stress test 등을 진행했으며, 클라우드 PaaS App Service의 scale-up과 scale-out을 활용해 무제한에 가까운 인스턴스를 활용 가능.  
+지난 Unity United 행사에서 jmetor 및 cloud 기반 성능 테스트 관련 시연을 수행했고, 6,000 RPS(Request per Second) 이상의 처리 성능 기본 제공  
 [Unity United 2016 발표자료 성능지표](http://www.slideshare.net/daewkim73/unity-60)
 
 ###5. 테스트/개발 가이드
-POSTMAN / Github wiki 및 CloudBread 캠프를 통해 제공된 콘텐트를 이용해 게임 백엔드로 구현 가능  
-특히, 100여개의 Behavior를 테스트 하기 위해 직접 Rest API를 제작하거나 만들 필요 없이, Postman의 collection을 이용할 수 있어 바로 Camp 등에서도 참여자와 협업 가능한 환경 제공  
+Postman / Github wiki 및 CloudBread 캠프를 통해 제공된 콘텐트를 이용해 게임 백엔드로 구현 가능  
+특히, 100여개의 Behavior를 테스트 하기 위해 직접 Restful API를 제작하거나 만들 필요 없이, Postman의 collection을 이용할 수 있어 바로 Camp 등에서도 참여자와 협업 가능한 환경 제공  
+특히, CloudBread-Unity-SDK 프로젝트는 Unity에서 바로 CloudBread의 API를 호출 가능한 SDK 프로젝트로 Unity에서의 CloudBread 개발을 더 쉽고 빠르게 진행 가능  
+[CloudBread Unity SDK Repo](https://github.com/CloudBreadProject/CloudBread-Unity-SDK)  
 [CloudBread wiki 개발 가이드](https://github.com/CloudBreadProject/CloudBread/wiki/Home-kor)
-
 
 ###6. 게임 서버 글로벌 배포
 ARM 패키지를 이용해 전세계 원하는 지역의 데이터센터에 손쉬운 배포 가능하도록 자동화된 배포환경 구현  
 데이터 센터가 제공되는 어느곳에서나 10분 이내에 모든 CloudBread의 서비스 환경을 배포 가능해 동남아 pre-launching이나 북미 유럽 지역에 최적화된 latency 제공 가능  
+CloudBread-ARM 프로젝트는 GUI 기반이 아닌 Script 기반으로 CloudBread 실행을 위해 필요한 Resource들을 빠르고 쉽게 배포할 수 있는 필수 설치 프로젝트  
 [데이터 센터 위치](https://azure.microsoft.com/en-us/regions/)
 [CloudBread ARM 프로젝트 Repo](https://github.com/CloudBreadProject/CloudBread-ARM)
 
