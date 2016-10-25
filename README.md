@@ -48,15 +48,105 @@ POSTMAN / Github wiki 및 CloudBread 캠프를 통해 제공된 콘텐트를 이
 
 ###6. 게임 서버 글로벌 배포
 ARM 패키지를 이용해 전세계 원하는 지역의 데이터센터에 손쉬운 배포 가능하도록 자동화된 배포환경 구현  
-데이터 센터가 제공되는 어느곳에서나 10분 이내에 모든 CloudBread의 서비스 환경을 배포 가능  
+데이터 센터가 제공되는 어느곳에서나 10분 이내에 모든 CloudBread의 서비스 환경을 배포 가능해 동남아 pre-launching이나 북미 유럽 지역에 최적화된 latency 제공 가능  
 [데이터 센터 위치](https://azure.microsoft.com/en-us/regions/)
 [CloudBread ARM 프로젝트 Repo](https://github.com/CloudBreadProject/CloudBread-ARM)
 
+###7. 글로벌 동시 배포/트래픽 분산
+글로벌 동시 론칭시 게이머가 가까운 데이터센터에 자동 접속할 수 있도록 돕는 환경 구현  
+Traffic manager를 이용한 글로벌 론칭 프로젝트 가능  
+![글로벌 론칭1](images/07-01.png)
 
+Traffic manager를 이용하면 사용자로부터 가장 가까운 데이터센터로 request가 요청됨  
 
+![글로벌 론칭2](images/07-02.png)
+백엔드의 데이터 동기화 기술이 어려운 부분이며, 이렇게 ServiceBus Topic을 이용해 replication 수행  
+[Traffic Manager 참조문서](https://azure.microsoft.com/en-us/documentation/articles/traffic-manager-overview/)
 
+###8. AES 데이터 암호화
+AES256으로 기본 Encryption된 데이터 처리
+[CloudBread 개발자 가이드 암호화 참조링크](https://github.com/CloudBreadProject/CloudBread/wiki/Home-kor)
+- Crypt 처리로 web.config의 설정을 이용해 AES256 암호화 처리 가능
+```
+    <!-- Encryption configuration. 암호화 설정-->
+    <add key="CloudBreadCryptSetting" value="AES256"></add>
+    <add key="CloudBreadCryptKey" value="1234567890123456"></add>
+    <add key="CloudBreadCryptIV" value="1234567890123456"></add>
+```
+- 클라이언트에서 암호화 구성을 수행해 CloudBread API를 호출
+- 암호화되어 전달된 텍스트를 CloudBread가 복호화해 서버에 저장
+- 암호화 설정시 자동 클라이언트에 암호화된 문자열 response
+- **[CloudBread-Encrypt-Text-Tool](https://github.com/CloudBreadProject/CloudBread-Encrypt-Text-Tool)**로 암호화 복호화를 개발시 문자열 테스트 가능
+- Postman에 기본 설정된 예제(Encrypt로 시작)를 활용 가능
+- DEMO 용도로, "https://cb2-crypt-demo.azurewebsites.net" 서버 이용 가능
 
+###9. 게임 로그 저장
+NoSQL 저장소를 활용해 JSON기반 데이터를 향후 목적으로 적재
+CloudBread에서의 로그는 기본적으로 Behavior API를 통해 데이터가 변경되는 모든 루틴에서 호출됨
+예를 들어, 
+[CBComInsMemberItem API](https://github.com/CloudBreadProject/CloudBread/blob/master/Controllers/CBComInsMemberItemController.cs)  
+의 경우 아래와 같이 로그를 적재하고 RunLog()를 수행
+```
+...
+// task end log
+logMessage.memberID = p.MemberID;
+logMessage.Level = "INFO";
+logMessage.Logger = "CBComInsMemberItemController";
+logMessage.Message = jsonParam;
+Logging.RunLog(logMessage);
+...
+```
+RunLog()는 [CBLoggers](https://github.com/CloudBreadProject/CloudBread/blob/master/CBLoggers.cs) 에 implement 되어있고, config에 따라 NoSQL Table Storage 등에 적재 가능  
+```
+...
+switch (globalVal.CloudBreadLoggerSetting)
+{
+    case "SQL":
+        /// Save log on SQL
 
+    case "ATS":
+        /// Save log on Azure Table Storage
 
+    case "AQS":
+        /// Save log on Azure Queue Storage
+
+    case "redis":
+        /// Save log on Azure Redis Cache
+        /// yyyymmdd:memberid:Controller:GUID
+}
+...
+```
+이렇게 원하는 타입의 분석 성향과 목적에 맞는 NoSQL에 적재 가능하며 기본 ATS - Table Storage를 권장  
+참고링크 : [CloudBread CBLogger 로그 처리 클래스](NoSQL 저장소를 활용해 JSON기반   데이터를  향후 분석 목적으로 적재)
+
+###10. 기본 관리자 화면
+게임 관련 데이터를 관리하는 기본 관리자 화면과 통계 정보를 확인 가능한 화면 제공  
+[CloudBread Admin Web Repo 공식](https://github.com/CloudBreadProject/CloudBread-Admin-Web)
+[현재 배포 중인 React로 개발된 2.1 project](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/2.1.0-LeeJeongYeop)를 아래 링크에서 검토 가능  
+```
+관리자 페이지 프로젝트(2.1 stable) 
+Admin-Web 데모 링크 : https://cb2-admin-demo.azurewebsites.net/  
+id : demo@cb2admin.onmicrosoft.com  
+pwd : P@ssw0rd!  
+```
+
+[CloudBread Admin Web 2.5 - node](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/master) 프로젝트를 전체 node.js 로 개발 중  
+
+###11. DAU/HAU/ARPU 통계
+일일 사용자 등의 통계 정보를 위의 10번 Admin-Web 프로젝트에서 확인 가능  
+통계 데이터를 generate하는 schduler 프로젝트는 [CloudBread-Scheduler](https://github.com/CloudBreadProject/CloudBread-Scheduler) Repo에서 처리  
+
+현재 Schduler를 실행하면 아래의 Slack 채널에 messgae가 도착하도록 구성된 상태  
+CloudBread Slack Notification : https://cloudbread.slack.com/messages/general/  
+즉, 해당 notification을 받아야 하는 팀원은 slack channel에서 관련 batch 작업이 완료 되는 것을 확인 가능  
+
+설치 및 구성에 대해서는 [CloudBread 설치 가이드 wiki](https://github.com/CloudBreadProject/CloudBread/wiki/Install-guide-kor)의 CloudBread-Scheduler 참조  
+
+12. 이벤트/쿠폰/선물관리
+게임에 필요한 기능 구현 완료  
+관리자 페이지에서 모두 처리 가능하며, 클라이언트에서는 Postman 및 [Behavior 리스트 문서](https://github.com/CloudBreadProject/CloudBread/wiki/CloudBread-behaviors-list) 를 참조해 해당 API를 호출 처리  
+
+13. 로그분석
+적재되는 NoSQL기반 로그 데이터를 Big-data를 활용해 분석  
 
 
