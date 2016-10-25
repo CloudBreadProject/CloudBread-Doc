@@ -183,14 +183,18 @@ BECA21F0-8B5E-4877-A18A-FD2A4B04322D|4DC0C4A6-893C-4246-AF80-B990EDD10C54|0.0112
 6EDC9E0F-5E7E-4A04-B420-5F3091052CE7|819F7AC7-61E9-40C8-9904-B53B1008311E|0.011269676|2016-06-13T17:40:10.131Z|stage21|CBComInsMemberGameInfoStages|14
 9F86454F-4E96-4CAD-A0AE-05DED005774F|766461D9-5FE6-4135-8FB3-15AACE24C4A8|0.011269676|2016-10-18T08:06:05.589Z|stage15|CBComInsMemberGameInfoStages|7
 920E72B5-377C-4590-82D5-387ED86EF757|3AB215E0-AAE7-4E69-AF8B-825FADBAF756|0.011269676|2016-06-13T17:38:02.779Z|stage14|CBComInsMemberGameInfoStages|1
-
+	일별, 약 1만건 정도의 데이터에 이렇게 클라이언트에서 들어온 스테이지 및 클리어 소요 시간 정보를 로그로 적재  
 - Loggers가 CBComInsMemberGameInfoStages 항목들을에 대해 message의 소요 시간(분)을 처리  
-    Hive 쿼리를 수행하기 위해 HDInsigt Cluster Manager 수행  
-    ![HDInsigt Cluster Manager ](images/13-1.png)  
-    Hive 쿼리 수행을 준비  
-    ![Hive 쿼리 수행](images/13-3.png)  
 
-3. csv파일들을 Hive에서 External Table로 load 작업 수행  
+- Hive 쿼리를 수행하기 위해 HDInsigt Cluster Manager 수행  
+
+- ![HDInsigt Cluster Manager ](images/13-1.png)  
+
+- Hive 쿼리 수행을 준비  
+
+- ![Hive 쿼리 수행](images/13-3.png)  
+
+- csv파일들을 Hive에서 External Table로 load 작업 수행  
     ```
     set hive.execution.engine=tez;
     DROP TABLE cloudbreadlog;
@@ -215,13 +219,13 @@ BECA21F0-8B5E-4877-A18A-FD2A4B04322D|4DC0C4A6-893C-4246-AF80-B990EDD10C54|0.0112
     --	AND INPUT__FILE__NAME LIKE '%.csv' 
     --order by level asc;
     ```  
-	이런 형태로 개발 수행
-4. Hive의 External Table로 로드 되었는지 count 체크
+	Hive 쿼리를 수행
+- Hive의 External Table로 로드 되었는지 count 체크
 ```
 SELECT count(*) FROM cloudbreadlog;
 ```
 
-5. 빠른 처리를 위해 Internal Table ORC(Optimized Row Columnar) 테이블로 로드
+- 빠른 처리를 위해 Internal Table ORC(Optimized Row Columnar) 테이블로 로드
 ```
 set hive.execution.engine=tez;
 CREATE TABLE IF NOT EXISTS CloudBreadStageTime(
@@ -247,7 +251,7 @@ FROM
 	cloudbreadlog;
 ```
 
-6. ORC 테이블에서 최종 조회 쿼리 수행
+- ORC 테이블에서 최종 조회 쿼리 수행
 ```
 select 
 	level, 
@@ -259,31 +263,35 @@ group by level
 order by level asc;
 ```
 
-7. 수행 결과로 stage별로 수행된 평균 시간과 총합 시간을 조회 가능
-이렇게 Hive 쿼리 결과를 얻을 수 있음
-level|stage_play_avg_min|stage_play_sum_min
----|---|---|
-stage0|7.032447466|22757|
-stage1|6.923216995|22812|
-stage10|6.990762125|24216|
-stage11|6.962710861|23527|
-stage12|6.99791294|23471|
-stage13|7.04329525|23426|
-stage14|7.060240964|24026|
-stage15|7.005102041|23341|
-stage16|6.991793313|23003|
-stage17|6.954984894|23021|
-stage18|7.089904421|23737|
-stage19|7.13037037|24065|
-stage2|7.110673135|23451|
-...
+- 수행 결과로 stage별로 수행된 평균 시간과 총합 시간을 조회 가능
+이렇게 Hive 쿼리 결과를 얻을 수 있음  
 
-이 외에도 다양한 여러 시나리오를 도출 가능  
+    level|stage_play_avg_min|stage_play_sum_min
+    ---|---|---|
+    stage0|7.032447466|22757
+    stage1|6.923216995|22812
+    stage10|6.990762125|24216
+    stage11|6.962710861|23527
+    stage12|6.99791294|23471
+    stage13|7.04329525|23426
+    stage14|7.060240964|24026
+    stage15|7.005102041|23341
+    stage16|6.991793313|23003
+    stage17|6.954984894|23021
+    stage18|7.089904421|23737
+    stage19|7.13037037|24065
+    stage2|7.110673135|23451
+    ...
+
+- 이 Hadoop 분석 결과를 Power BI를 이용해 손쉬운 시각화 및 Web에 배포가 가능(Power BI 관련 구성은 26번 항목 참조)  
+- ![Power BI 데이터 시각화](images/27-1.png)  
+
+이 외에도 다양한 CloudBread Hadoop 분석 시나리오를 도출 가능  
 - 주요 아이템들의 사용량 변화 추이(CBAddUseMemberItemController API참조)  
 - 사용자의 경험치 또는 Rank를 위한 Point 정보 추적(CBComUdtMemberGameInfoesController API 참조)  
 - 현재 게임 내에서 실제 구매되는 주요 아이템의 수량(CBAddMemberItemPurchaseController API 참조)  
 
-등의 다양한 log를 활용한 시나리오를 분석 가능  
+등의 다양한 log를 활용한 시나리오를 Hadoop - Big data 분석 가능  
 
 ###14. Elastic DB – sharded parallel processing
 게임 데이터의 증가에 따라 데이터를 병렬로 분산 가능하도록 shard 화 하는 구성구현  
