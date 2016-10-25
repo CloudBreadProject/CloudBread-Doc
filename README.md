@@ -340,9 +340,10 @@ big data 분석에서 ETL 도구로 사용되며, CloudBread의 경우 log 분�
 ###20. Machine Learning algorithm
 Machine Learning에서 데이터를 활용해 예측 분석 서비스가   가능하도록 학습시키기 위한 알고리듬 및 Machine Learning workflow 를 구현  
 
-CloudBread Game User Chrun 공개 Machine Learning model
+CloudBread Game User Chrun 공개 Machine Learning model  
 http://gallery.cortanaintelligence.com/Experiment/CloudBread-game-user-churn-prediction-1
 
+![CloudBread Game User Chrun](images/20-1.png)  
 CloudBread game item suggestion prediction 공개 Machine Learning model
 http://gallery.cortanaintelligence.com/Experiment/CloudBread-game-item-suggestion-prediction-1
 
@@ -351,10 +352,14 @@ http://gallery.cortanaintelligence.com/Experiment/CloudBread-game-item-suggestio
 목표 정의 :  
 이 분석모델을 활용해 예측모델(Predict model)을 구축하고 CloudBread를 통해 실시간 예측을 수행하는 것이 목표.
 
-1. CloudBread Machine Learning 모델을 생성하거나, 위의 gallery에서 복제
-2. 모델을 실행하고, 수행된 예측 결과 확인
-3. Predictive model로 생성 후 API Web Service로 배포
-4. 생성된 Web service의 API Key를 이용해 CloudBread에서 real-time predict 수행
+- CloudBread Machine Learning 모델을 생성하거나, 위의 gallery에서 복제  
+- ![CloudBread Game User Chrun](images/20-2.png)  
+- 모델을 실행하고, 수행된 예측 결과 확인
+- ![CloudBread Game User Chrun](images/20-3.png)  
+- Predictive model로 생성 후 API Web Service로 배포
+- ![CloudBread Game User Chrun](images/20-4.png)  
+- 생성된 Web service의 API Key를 이용해 CloudBread에서 real-time predict 수행
+
 ```
 public class UserChurnController : ApiController  
 {
@@ -382,13 +387,17 @@ public class UserChurnController : ApiController
     }
 }
 ```
-5. Machine Learning API Controller를 publish 하고, Postman에서 테스트 수행해 real-time prediction 수행
+- ![CloudBread Game User Chrun](images/20-5.png)  
+- Machine Learning API Controller를 publish 하고, Postman에서 테스트 수행해 real-time prediction 수행
 
-6. Batch 분석 수행  
+- Batch 분석 수행  
 Batch 작업을 수행하기 위해서 Machine Learning Batch execution이 제공하는 코드 이용이 가능.  
-추가적으로, Excel을 이용해 Batch 분석도 가능  
+![CloudBread Game User Chrun](images/20-6.png)  
+추가적으로, Functions를 이용해 server-less로 batch 호출 역시 가능  
+![CloudBread Game User Chrun](images/20-7.png)  
+Excel을 이용해 Batch 분석도 가능  
 
-7. In-game에서 게이머의 패턴과 특성을 취합해 학습 시킨 후 적절한 유료 아이템을 추천하는 시나리오 역시 게임 서비스에서 매우 중요한 매출과 직결되는 예측 분석  
+- In-game에서 게이머의 패턴과 특성을 취합해 학습 시킨 후 적절한 유료 아이템을 추천하는 시나리오 역시 게임 서비스에서 매우 중요한 매출과 직결되는 예측 분석  
 관련해 CloudBread는 predict model로 in-game item suggestion을 제공  
 Postman 및 소스코드 참조  
 
@@ -465,10 +474,21 @@ Stream Analytics를 실행하고, fraud device를 수행한 후, fraudoutput을 
 Real-time 분석을 위해 Stream Analytics와 Machine Learning 을 연계하기 위해 API 소비를 위한 function 개발  (CloudBread 에서 Stream Analytics 를 통하지 않고 즉시 비동기로 Machine Learning API를 호출 가능하도록 구성)
 
 ###26. Real-time Business Intelligence 플랫폼
-데이터를 visualize 시키기 위한 Business Intelligence 플랫폼 제공
+데이터를 visualize 시키기 위한 Business Intelligence 플랫폼 제공  
+게임마다 서버에서 필요한 property나 entity가 판이하게 다름. 즉, 단순 rank 서비스가 필요할 경우에는 item 로직 등을 서버에서 따로 사용할 이유나 필요가 없음. CloudBread를 이용할 경우에도 마찬가지로, Business Intelligence를 위한 시각화 역시, 개별 property가 워낙에 다르기 때문에 기본적인 빌딩 블록을 제시하고 게임 운영자가 이를 원하는 시각화로 배포 하는 것을 목표로 수행  
+이를 위해 Power BI를 이용해 시각화 모델을 만들고, 이를 웹에서 분석하거나 CloudBread 관리자 페이지에서 호출하는 것을 목표로 함.
+- Power BI Desktop을 이용한 시각화 디자인 수행
+- ![Power BI Data Visualization](images/27-1.png)  
+- Power BI를 Power BI 서비스로 배포
+- ![Power BI Data Visualization](images/27-2.png)  
+- 생성한 Report를 CloudBread의 Admin-Web 등으로 게시하기 위해 embed 코드 생성
+- ![Power BI Data Visualization](images/27-3.png)  
+- 생성된 리포트 데이터를 Admin-Web 또는 팀사이트 등에 게시
+- ![Power BI Data Visualization](images/27-4.png)  
 
 ###27. Real-time Business Intelligence 웹사이트
 Real Time 분석 결과를 Web으로 display 시키기 위한 웹사이트 구축
+26번 참조
 
 
 
