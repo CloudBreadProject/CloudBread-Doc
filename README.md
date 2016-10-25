@@ -291,25 +291,29 @@ order by level asc;
 - 사용자의 경험치 또는 Rank를 위한 Point 정보 추적(CBComUdtMemberGameInfoesController API 참조)  
 - 현재 게임 내에서 실제 구매되는 주요 아이템의 수량(CBAddMemberItemPurchaseController API 참조)  
 
-등의 다양한 log를 활용한 시나리오를 Hadoop - Big data 분석 가능  
+등의 다양한 log를 활용한 시나리오를 CloudBread의 저장소와 Hadoop - Big data 분석 가능  
 
 ###14. Elastic DB – sharded parallel processing
-게임 데이터의 증가에 따라 데이터를 병렬로 분산 가능하도록 shard 화 하는 구성구현  
-(Microsoft 개발 중이라 보류, Elastic Scale for Azure SQL Database)  
+게임 데이터의 증가에 따라 데이터를 수평적으로 분산 가능하도록 sharding을 구현  
+(Microsoft 개발 중이라 개발 보류, Elastic Scale for Azure SQL Database)  
 CloudBread의 Admin-Web은 node.js 기반이기 때문에, node.js에서 Elastic DB에 접근하기 위한 NPM package 등이 추가로 필요  
 ![Elastic DB](images/14-1.png)  
 참고링크 : [Get started with Elastic Database tools](https://azure.microsoft.com/en-us/documentation/articles/sql-database-elastic-scale-get-started/)
 
 ###15. NoSQL sharded Table storage
-로그가 적재되는 NoSQL 테이블 저장소에 대해 병렬로 데이터 적재/조회가 가능하도록 구현
-PaaS로 제공되는 NoSQL Key/Value 저장소인 Table Storage를 활용해 병렬 분산 적재 수행
+로그가 적재되는 NoSQL 테이블 저장소에 대해 병렬, 수평적으로 데이터 적재/조회가 가능하도록 구현  
+PaaS로 제공되는 NoSQL Key/Value 저장소인 Table Storage를 활용해 병렬 분산 적재 수행  
+
 ![NoSQL 저장소 Table Storage](images/15-1.png)  
-Logical한 하나의 테이블이나 내부적으로 PartitionKey를 조절해 해당 Entity를 물리적으로 다른 하드웨어의 Storage에 저장하는 구조로 처리  
+
+CloudBread는 데이터의 수평적 분산을 위해 Logical한 하나의 테이블이나 내부적으로 PartitionKey를 조절해 해당 Entity를 물리적으로 다른 하드웨어의 Storage에 저장하는 구조로 처리  
 
 ###16. redis cluster service 
-게임 데이터에 대해 In-Memory 기반 KV NoSQL 저장소인 redis 캐시 서비스의 안정성과 성능을 위한 클러스터 기능 구현 추가  
-CloudBread는 redis cache를 Ranking 서비스와 로그 저장소로 사용 가능.  
+게임 데이터에 대해 In-Memory 기반 Key/Value NoSQL 저장소인 redis 캐시 서비스의 안정성과 성능을 위한 클러스터 기능 구현 추가  
+CloudBread는 redis cache를 Ranking 서비스와 로그 저장소로 사용  
+
 [CloudBread - CBRedis](https://github.com/CloudBreadProject/CloudBread/blob/master/CBRedis.cs) 처리에서 redis 처리가 이루어짐.  
+
 ```
 public static bool SetSortedSetRank(string sid, double point)
 {
@@ -327,13 +331,15 @@ public static bool SetSortedSetRank(string sid, double point)
     return true;
 }
 ```
-Redis 라이브러리들을 이용해 API front-end에서 처리가 진행되고, [CBRankController](https://github.com/CloudBreadProject/CloudBread/blob/master/Controllers/CBRankController.cs) 에서 API에 대해 응답 처리 수행  
-CloudBread에서 이런 redis 처리의 안정성을 위해 Clustering 기능을 적용했으며, 기본 Cluster의 redis로 접근하면 추가 작업없이 위의 API들을 모두 활용 가능하고 최대 10개의 shard를 구성 가능  
+Redis 라이브러리들을 이용해 API front-end에서 처리가 진행되고, [CBRankController](https://github.com/CloudBreadProject/CloudBread/blob/master/Controllers/CBRankController.cs) 에서 랭킹(리더보드) API에 대해 응답 처리 수행  
+CloudBread에서 이런 redis 처리의 안정성을 위해 Clustering 기능을 기본 적용했으며, 기본 Cluster의 redis로 CloudBread의 config 파일에 구성 후 접근하면 추가 작업 없이 위의 API들을 모두 활용 가능하고, 최대 10개의 Redis shard를 구성 가능  
+
 ![Redis](images/16-1.png)  
 
 ###17. NoSQL Table Storage–to- Hadoop
-NoSQL에 적재된 데이터를 Big   data 분석을 위해 Hadoop으로 적재하는 기능 구현  
-(게임 데이터의 성격에 따라 달라짐. 내용 참조) 13번 로그분석에서 전체 분석을 Hadoop을 이용해 수행하는 절차를 진행 완료.
+NoSQL에 적재된 데이터를 Big data 분석을 위해 Hadoop으로 적재하는 기능 구현  
+(게임 데이터의 성격에 따라 달라짐.)  
+*13번 로그분석 - Big data / Hadoop* 에서 Table 저장소의 로그 분석을 Hadoop으로 수행하는 과정을 이미 진행  
 
 ###18. Stream Analytics API
 실시간 Machine Learning 분석 기법을 위해 API를 구현/Machine 
