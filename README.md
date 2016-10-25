@@ -171,42 +171,43 @@ Logging.RunLog(logMessage);
 2. 로드된 csv 파일의 구조
 PartitionKey|RowKey|Timestamp|Date|Level|Logger|Message
 ---|---|---|---|---|---|---|
-BECA21F0-8B5E-4877-A18A-FD2A4B04322D|4DC0C4A6-893C-4246-AF80-B990EDD10C54|0.011269676|2016-09-10T04:29:50.828Z|stage5|CBComInsMemberGameInfoStages|9
-6EDC9E0F-5E7E-4A04-B420-5F3091052CE7|819F7AC7-61E9-40C8-9904-B53B1008311E|0.011269676|2016-06-13T17:40:10.131Z|stage21|CBComInsMemberGameInfoStages|14
-9F86454F-4E96-4CAD-A0AE-05DED005774F|766461D9-5FE6-4135-8FB3-15AACE24C4A8|0.011269676|2016-10-18T08:06:05.589Z|stage15|CBComInsMemberGameInfoStages|7
-920E72B5-377C-4590-82D5-387ED86EF757|3AB215E0-AAE7-4E69-AF8B-825FADBAF756|0.011269676|2016-06-13T17:38:02.779Z|stage14|CBComInsMemberGameInfoStages|1
-Loggers가 CBComInsMemberGameInfoStages 항목들을에 대해 message의 소요 시간(분)을 처리  
-Hive 쿼리를 수행하기 위해 HDInsigt Cluster Manager 수행  
-![HDInsigt Cluster Manager ](images/13-1.png)  
-Hive 쿼리 수행을 준비  
-![Hive 쿼리 수행](images/13-3.png)  
+BECA21F0-8B5E-4877-A18A-FD2A4B04322D|4DC0C4A6-893C-4246-AF80-B990EDD10C54|0.011269676|2016-09-10T04:29:50.828Z|stage5|CBComInsMemberGameInfoStages|9|
+6EDC9E0F-5E7E-4A04-B420-5F3091052CE7|819F7AC7-61E9-40C8-9904-B53B1008311E|0.011269676|2016-06-13T17:40:10.131Z|stage21|CBComInsMemberGameInfoStages|14|
+9F86454F-4E96-4CAD-A0AE-05DED005774F|766461D9-5FE6-4135-8FB3-15AACE24C4A8|0.011269676|2016-10-18T08:06:05.589Z|stage15|CBComInsMemberGameInfoStages|7|
+920E72B5-377C-4590-82D5-387ED86EF757|3AB215E0-AAE7-4E69-AF8B-825FADBAF756|0.011269676|2016-06-13T17:38:02.779Z|stage14|CBComInsMemberGameInfoStages|1|
+
+	Loggers가 CBComInsMemberGameInfoStages 항목들을에 대해 message의 소요 시간(분)을 처리  
+    Hive 쿼리를 수행하기 위해 HDInsigt Cluster Manager 수행  
+    ![HDInsigt Cluster Manager ](images/13-1.png)  
+    Hive 쿼리 수행을 준비  
+    ![Hive 쿼리 수행](images/13-3.png)  
 
 3. csv파일들을 Hive에서 External Table로 load 작업 수행  
-```
-set hive.execution.engine=tez;
-DROP TABLE cloudbreadlog;
-CREATE EXTERNAL TABLE cloudbreadlog (
-	PartitionKey string, 
-	RowKey string, 
-	`Timestamp` string, 
-	`Date` string, 
-	Level string, 
-	Logger string, 
-	Message string
-)
-ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
-STORED AS TEXTFILE LOCATION 'wasbs:///example/data/';
-SELECT 
-	* 
-FROM 
-	cloudbreadlog 
-WHERE 
-	INPUT__FILE__NAME LIKE '%.csv' 
---	where Logger like 'CBComInsMemberGameInfoStages'
---	AND INPUT__FILE__NAME LIKE '%.csv' 
---order by level asc;
-```
-
+    ```
+    set hive.execution.engine=tez;
+    DROP TABLE cloudbreadlog;
+    CREATE EXTERNAL TABLE cloudbreadlog (
+        PartitionKey string, 
+        RowKey string, 
+        `Timestamp` string, 
+        `Date` string, 
+        Level string, 
+        Logger string, 
+        Message string
+    )
+    ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+    STORED AS TEXTFILE LOCATION 'wasbs:///example/data/';
+    SELECT 
+        * 
+    FROM 
+        cloudbreadlog 
+    WHERE 
+        INPUT__FILE__NAME LIKE '%.csv' 
+    --	where Logger like 'CBComInsMemberGameInfoStages'
+    --	AND INPUT__FILE__NAME LIKE '%.csv' 
+    --order by level asc;
+    ```  
+	이런 형태로 개발 수행
 4. Hive의 External Table로 로드 되었는지 count 체크
 ```
 SELECT count(*) FROM cloudbreadlog;
@@ -254,19 +255,19 @@ order by level asc;
 이렇게 Hive 쿼리 결과를 얻을 수 있음
 level|stage_play_avg_min|stage_play_sum_min
 ---|---|---|
-stage0|7.032447466|22757
-stage1|6.923216995|22812
-stage10|6.990762125|24216
-stage11|6.962710861|23527
-stage12|6.99791294|23471
-stage13|7.04329525|23426
-stage14|7.060240964|24026
-stage15|7.005102041|23341
-stage16|6.991793313|23003
-stage17|6.954984894|23021
-stage18|7.089904421|23737
-stage19|7.13037037|24065
-stage2|7.110673135|23451
+stage0|7.032447466|22757|
+stage1|6.923216995|22812|
+stage10|6.990762125|24216|
+stage11|6.962710861|23527|
+stage12|6.99791294|23471|
+stage13|7.04329525|23426|
+stage14|7.060240964|24026|
+stage15|7.005102041|23341|
+stage16|6.991793313|23003|
+stage17|6.954984894|23021|
+stage18|7.089904421|23737|
+stage19|7.13037037|24065|
+stage2|7.110673135|23451|
 ...
 
 이 외에도 다양한 여러 시나리오를 도출 가능  
@@ -280,7 +281,7 @@ stage2|7.110673135|23451
 게임 데이터의 증가에 따라 데이터를 병렬로 분산 가능하도록 shard 화 하는 구성구현  
 (Microsoft 개발 중이라 보류, Elastic Scale for Azure SQL Database)  
 CloudBread의 Admin-Web은 node.js 기반이기 때문에, node.js에서 Elastic DB에 접근하기 위한 NPM package 등이 추가로 필요  
-![Hive 쿼리 수행](images/14-1.png)  
+![Elastic DB](images/14-1.png)  
 참고링크 : [Get started with Elastic Database tools](https://azure.microsoft.com/en-us/documentation/articles/sql-database-elastic-scale-get-started/)
 
 ###15. NoSQL sharded Table storage
