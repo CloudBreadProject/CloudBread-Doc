@@ -52,7 +52,7 @@ Postman / Github wiki 및 CloudBread 캠프를 통해 제공된 콘텐트를 이
 ARM 패키지를 이용해 전세계 원하는 지역의 데이터센터에 손쉬운 배포 가능하도록 자동화된 배포환경 구현  
 데이터 센터가 제공되는 어느곳에서나 10분 이내에 모든 CloudBread의 서비스 환경을 배포 가능해 동남아 pre-launching이나 북미 유럽 지역에 최적화된 latency 제공 가능  
 CloudBread-ARM 프로젝트는 GUI 기반이 아닌 Script 기반으로 CloudBread 실행을 위해 필요한 Resource들을 빠르고 쉽게 배포할 수 있는 필수 설치 프로젝트  
-[데이터 센터 위치](https://azure.microsoft.com/en-us/regions/)
+[데이터 센터 위치](https://azure.microsoft.com/en-us/regions/)  
 [CloudBread ARM 프로젝트 Repo](https://github.com/CloudBreadProject/CloudBread-ARM)
 
 ###7. 글로벌 동시 배포/트래픽 분산
@@ -120,15 +120,17 @@ switch (globalVal.CloudBreadLoggerSetting)
 
 ###10. 기본 관리자 화면
 게임 관련 데이터를 관리하는 기본 관리자 화면과 통계 정보를 확인 가능한 화면 제공  
-[CloudBread Admin Web Repo 공식](https://github.com/CloudBreadProject/CloudBread-Admin-Web)
-[현재 배포 중인 React로 개발된 2.1 project branch](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/2.1.0-LeeJeongYeop)를 아래 링크에서 검토 가능(주의! 현재 master branch는 지속 업데이트 중)  
+[CloudBread Admin Web 공식 Repo](https://github.com/CloudBreadProject/CloudBread-Admin-Web)  
+
+[현재 배포 중인 React로 개발된 2.1 project branch](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/2.1.0-LeeJeongYeop)를 아래 링크에서 검토 가능  
+(주의! 현재 master branch는 지속 업데이트 중)  
 ```
 관리자 페이지 프로젝트(2.1 stable)  
 Admin-Web 데모 링크 : https://cb2-admin-demo.azurewebsites.net/  
 id : demo@cb2admin.onmicrosoft.com  
 pwd : P@ssw0rd!  
 ```
-데이터가 주기적으로 초기화됨(1시간에 1회)  
+참조 : CB2 데모 사이트는 모두 데이터가 주기적으로 초기화됨(1시간에 1회)  
 
 [CloudBread Admin Web 2.5 - node](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/master) 프로젝트는 전체 CloudBread-Admin-Web을 아래의 분석 기능들을 포함하는 node.js 로 지속 개발 중  
 
@@ -148,17 +150,18 @@ CloudBread-Scheduler 설치 및 구성에 대해서는 [CloudBread 설치 가이
 
 ###13. 로그분석 - Big data / Hadoop
 적재되는 NoSQL기반 로그 데이터를 Big-data Hadoop을 활용해 분석  
-CloudBread는 NoSQL인 Table Storage의 분석을 위해 HortonWorks Hadoop PaaS distribution인 HDInsight를 이용해 분석 수행  
+CloudBread는 NoSQL인 Table Storage의 분석을 위해 HortonWorks의 Hadoop PaaS 배포판인 HDInsight를 이용해 분석 수행  
 
 [HDInsight 공식 사이트 링크](https://azure.microsoft.com/en-us/services/hdinsight/)  
 
-Table Storage에는 Key/Value 기반 NoSQL 저장소로, 모든 CloudBread의 데이터에 대한 수정 작업을 로그로 기록하기 때문에 다양한 Big data 분석 시나리오에서 적용 가능하며, 아래 예제는 지난 CloudBread 캠프에서 요청 주셨던 ** 모바일 게임의 스테이지 레벨(난이도) 디자인 분석 시나리오**  
+Table Storage는 Key/Value 기반 NoSQL 저장소로, CloudBread의 모든 데이터 수정 작업을 로그로 기록하기 때문에 다양한 Big data 분석 시나리오에서 적용 가능하고, 아래 예제는 지난 CloudBread 캠프에서 요청 주셨던 **모바일 게임의 스테이지 레벨(난이도) 디자인 분석 시나리오**  
 
- ** 모바일 게임의 스테이지 레벨(난이도) 디자인 분석**  
-- 목표정의 : 30여개의 스테이지가 존재하는 캐주얼 게임. 스테이지별로 난이도를 적절히 유지하기 위해, 해당 스테이지별로 클리어에 소요되는 시간 등을 기록해 스테이지 난이도를 조절하는데 사용하고 싶음. 이를 위해 Closed Beta 서비스를 CloudBread로 7일간 진행했고, 7일간 수집된 결과에서 스테이지별 난이도 분석을 희망  
+**모바일 게임의 스테이지 레벨(난이도) 디자인 분석**  
+- 목표정의 : 30여개의 스테이지가 존재하는 캐주얼 게임. 스테이지별로 난이도를 적절히 유지하기 위해, 해당 스테이지별로 클리어에 소요되는 시간 등을 기록해 스테이지 난이도를 조절하는데 사용하기 희망. 이를 위해 Closed Beta 서비스를 CloudBread로 7일간 진행했고, 7일간 수집된 CloudBread 로그에서 스테이지별 난이도 분석을 희망  
 
 - 기본정보 : 게임의 스테이지 정보는 Member : MemberGameInfoStage 테이블에 one to many relationship으로 정의되어 있음. 이 정보는 RDBMS이기 때문에 state 정보만을 저장해 log성으로 남기지는 않음.  
-CloudBread의 API인 *CBComInsMemberGameInfoStagesController*에서 로그 적재 처리를 담당하게 되고, 이 루틴에 아래의 log를 남기는 처리가 존재  
+
+- CloudBread의 API인 *CBComInsMemberGameInfoStagesController*에서 로그 적재 처리를 담당하게 되고, 이 루틴에 아래의 log를 남기는 처리가 존재  
 ```
 // task end log
 logMessage.memberID = p.MemberID;
@@ -167,9 +170,11 @@ logMessage.Logger = "CBComInsMemberGameInfoStagesController";
 logMessage.Message = jsonParam;
 Logging.RunLog(logMessage);
 ```
-즉, 일별 적재되는 로그 데이터에서 CBComInsMemberGameInfoStagesController 식별자를 이용해 Hadoop에서 Hive를 수행하면 원하는 스테이지별 클리어 소요 시간을 계산 가능  
+
+- 일별 적재되는 로그 데이터에서 CBComInsMemberGameInfoStagesController 식별자를 이용해 Hadoop에서 Hive를 수행하면 원하는 스테이지별 클리어 소요 시간을 계산 가능  
 
 - HDInsight의 HDFS는 Blob Storage와 호환됨  
+
 - Blob 처리를 위한 [Storage Explorer](http://storageexplorer.com/) 개발 도구에서 blob 을 로드. blob들은 *"wasbs:///example/data/"* 하위로 매핑됨  
 
 - ![Storage Explorer 개발 도구에서 blob 을 로드](images/13-0.png)
@@ -183,8 +188,8 @@ BECA21F0-8B5E-4877-A18A-FD2A4B04322D|4DC0C4A6-893C-4246-AF80-B990EDD10C54|0.0112
 6EDC9E0F-5E7E-4A04-B420-5F3091052CE7|819F7AC7-61E9-40C8-9904-B53B1008311E|0.011269676|2016-06-13T17:40:10.131Z|stage21|CBComInsMemberGameInfoStages|14
 9F86454F-4E96-4CAD-A0AE-05DED005774F|766461D9-5FE6-4135-8FB3-15AACE24C4A8|0.011269676|2016-10-18T08:06:05.589Z|stage15|CBComInsMemberGameInfoStages|7
 920E72B5-377C-4590-82D5-387ED86EF757|3AB215E0-AAE7-4E69-AF8B-825FADBAF756|0.011269676|2016-06-13T17:38:02.779Z|stage14|CBComInsMemberGameInfoStages|1
-	일별, 약 1만건 정도의 데이터에 이렇게 클라이언트에서 들어온 스테이지 및 클리어 소요 시간 정보를 로그로 적재  
-- Loggers가 CBComInsMemberGameInfoStages 항목들을에 대해 message의 소요 시간(분)을 처리  
+	일별, 약 1만건 정도의 데이터는 클라이언트에서 들어온 스테이지 및 클리어 소요 시간 정보를 CloudBread 로그로 적재  
+- CloudBread의 Loggers가 CBComInsMemberGameInfoStages 항목들을에 대해 message의 소요 시간(분)을 처리  
 
 - Hive 쿼리를 수행하기 위해 HDInsigt Cluster Manager 수행  
 
@@ -221,47 +226,47 @@ BECA21F0-8B5E-4877-A18A-FD2A4B04322D|4DC0C4A6-893C-4246-AF80-B990EDD10C54|0.0112
     ```  
 	Hive 쿼리를 수행
 - Hive의 External Table로 로드 되었는지 count 체크
-```
-SELECT count(*) FROM cloudbreadlog;
-```
+    ```
+    SELECT count(*) FROM cloudbreadlog;
+    ```
 
 - 빠른 처리를 위해 Internal Table ORC(Optimized Row Columnar) 테이블로 로드
-```
-set hive.execution.engine=tez;
-CREATE TABLE IF NOT EXISTS CloudBreadStageTime(
-	PartitionKey string, 
-	RowKey string, 
-	`Timestamp` string, 
-	`Date` string, 
-	Level string, 
-	Logger string, 
-	Message string
-)
-STORED AS ORC;
-INSERT OVERWRITE TABLE CloudBreadStageTime
-SELECT 
-	PartitionKey,
-	RowKey, 
-	`Timestamp`, 
-	`Date`, 
-	Level, 
-	Logger, 
-	Message
-FROM 
-	cloudbreadlog;
-```
+    ```
+    set hive.execution.engine=tez;
+    CREATE TABLE IF NOT EXISTS CloudBreadStageTime(
+        PartitionKey string, 
+        RowKey string, 
+        `Timestamp` string, 
+        `Date` string, 
+        Level string, 
+        Logger string, 
+        Message string
+    )
+    STORED AS ORC;
+    INSERT OVERWRITE TABLE CloudBreadStageTime
+    SELECT 
+        PartitionKey,
+        RowKey, 
+        `Timestamp`, 
+        `Date`, 
+        Level, 
+        Logger, 
+        Message
+    FROM 
+        cloudbreadlog;
+    ```
 
 - ORC 테이블에서 최종 조회 쿼리 수행
-```
-select 
-	level, 
-	avg(cast(Message as int)) as stage_play_avg_min, 
-	sum(cast(Message as int)) as stage_play_sum_min 
-from CloudBreadStageTime
-where Logger = 'CBComInsMemberGameInfoStages'
-group by level
-order by level asc;
-```
+    ```
+    select 
+        level, 
+        avg(cast(Message as int)) as stage_play_avg_min, 
+        sum(cast(Message as int)) as stage_play_sum_min 
+    from CloudBreadStageTime
+    where Logger = 'CBComInsMemberGameInfoStages'
+    group by level
+    order by level asc;
+    ```
 
 - 수행 결과로 stage별로 수행된 평균 시간과 총합 시간을 조회 가능
 이렇게 Hive 쿼리 결과를 얻을 수 있음  
@@ -296,7 +301,7 @@ order by level asc;
 ###14. Elastic DB – sharded parallel processing
 게임 데이터의 증가에 따라 데이터를 수평적으로 분산 가능하도록 sharding을 구현  
 (Microsoft 개발 중이라 개발 보류, Elastic Scale for Azure SQL Database)  
-CloudBread의 Admin-Web은 node.js 기반이기 때문에, node.js에서 Elastic DB에 접근하기 위한 NPM package 등이 추가로 필요  
+CloudBread의 Admin-Web은 node.js 기반이기 때문에, node.js에서 Elastic DB에 접근하기 위한 NPM package 등이 추가로 필요함  
 ![Elastic DB](images/14-1.png)  
 참고링크 : [Get started with Elastic Database tools](https://azure.microsoft.com/en-us/documentation/articles/sql-database-elastic-scale-get-started/)
 
@@ -346,17 +351,17 @@ NoSQL에 적재된 데이터를 Big data 분석을 위해 Hadoop으로 적재하
 (CloudBread 에서 Stream Analytics 를 통하지 않고 즉시 비동기로 Machine Learning API를 호출 가능하도록 구성)
 
 최초 Machine Learning을 호출하기 위해 가이드 되는 방안으로, 기존 R에서 제공하는 여러 Machine Learning 라이브러리들을 활용해 구축하는 방안에 대해 CloudBread ontributor 팀내부에서 협의 진행.  
-최선의 real-time Machine Learning 예측 분석 방안을 협의 중에 Azure Machine Learning이 발표  
+최선의 real-time Machine Learning 예측 분석 방안을 협의 중에 Azure Machine Learning으로 예측 분석 플랫폼 선택  
 
-예측 모델(Predictive Model)을 클라우드 PaaS 기반으로 노출, 손쉽게 사용 가능한 방안을 제공.  
+예측 모델(Predictive Model)을 클라우드 PaaS 기반으로 노출, 손쉽게 API 형태로 사용 가능한 방안을 제공.  
 
-이에 CloudBread의 Front-end App Service에서 즉각적으로 Machine Learning으로의 Predict API 호출이 가능해졌으며 Stream Analytics는 실시간 라이브 스트팀 데이터내의 Fraud Detection에서만 활용.  
-**Stream Analytics API 및 분석 적용 부분은 아래 Fraud Detection 기능 소개에서 함께 수행**
+CloudBread의 Front-end App Service에서 즉각적으로 Machine Learning으로의 Predict API 호출이 가능하고, Stream Analytics는 실시간 라이브 스트팀 데이터내의 *Fraud Detection* 분석에서만 활용.  
+**Stream Analytics API 및 분석 적용 부분은 아래 Fraud Detection 분석 기능 소개에서 함께 수행**
 
 ###19. Data Factory
 Hadoop 에서 data pre-processing 및 automated data pipelining  
 을 위한 data factory 서비스 구축(게임 데이터의 성격에 따라 다르며, 필요성이 낮음)  
-big data 분석에서 ETL 도구로 사용되며, CloudBread의 경우 log 분석에 필요한 Hadoop인 HDInsight를 Data Factory 내에서 자동으로 provision/batch수행/결과를 다시 ETL에 올려 수행 과정을 활용 가능.  
+big data 분석에서 ETL 도구로 사용되며, CloudBread의 경우 log 분석에 필요한 Hadoop인 HDInsight를 Data Factory 내에서 자동으로 provision/batch수행/결과를 다시 ETL에 올려 수행 과정을 활용 예정.  
 
 ###20. Machine Learning algorithm
 Machine Learning에서 데이터를 활용해 예측 분석 서비스가 가능하도록 학습시키기 위한 알고리듬 및 Machine Learning workflow 를 구현  
@@ -367,9 +372,9 @@ Machine Learning에서 데이터를 활용해 예측 분석 서비스가 가능�
 
 [CloudBread의 게임내 아이템 추천(In-game item suggestion) real-time prediction & Batch prediction](https://gallery.cortanaintelligence.com/Experiment/CloudBread-game-item-suggestion-prediction-1)  
 
-위의 모델은 모두 공개된 CloudBread Machine Learning의 분석 모델  
+위의 모델은 모두 CloudBread 팀이 공개한 CloudBread Machine Learning의 예측 분석 모델  
 
-**예측 분석 목표 정의 :  **
+**예측 분석 목표 정의 :  **  
 위의 공개한 분석모델을 활용해 예측모델(Predict model)을 구축하고 CloudBread의 API를 통해 실시간 예측을 수행하는 것이 목표.
 
 - CloudBread Machine Learning 모델을 생성하거나, 위의 gallery에서 복제  
@@ -386,35 +391,35 @@ Machine Learning에서 데이터를 활용해 예측 분석 서비스가 가능�
 
 - 생성된 Web service의 API Key를 이용해 CloudBread에서 real-time predict 수행
 
-```
-public class UserChurnController : ApiController  
-{
-    // POST api/UserChurn
-    public HttpResponseMessage POST(CBChurn p)
+    ```
+    public class UserChurnController : ApiController  
     {
-        // Machine Learning 분석 요청
-        InvokeRequestResponseService(p).Wait();
-        ...
-    }
-    
-    // Machine Learning Web Service 호출
-    static async Task InvokeRequestResponseService(CBChurn p)
-    {
-        ...
-        const string apiKey = "API키-수정"; // Replace this with the API key for the web service
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-        client.BaseAddress = new Uri("Machine-Learning-Web-Service-URL-수정");
-        HttpResponseMessage response = await client.PostAsJsonAsync("", scoreRequest).ConfigureAwait(false);
-        if (response.IsSuccessStatusCode)
+        // POST api/UserChurn
+        public HttpResponseMessage POST(CBChurn p)
         {
-            string result = await response.Content.ReadAsStringAsync();
-            Debug.WriteLine("Result: {0}", result);
-            p.ChurnYN = result;
+            // Machine Learning 분석 요청
+            InvokeRequestResponseService(p).Wait();
+            ...
         }
-        ...
+
+        // Machine Learning Web Service 호출
+        static async Task InvokeRequestResponseService(CBChurn p)
+        {
+            ...
+            const string apiKey = "API키-수정"; // Replace this with the API key for the web service
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            client.BaseAddress = new Uri("Machine-Learning-Web-Service-URL-수정");
+            HttpResponseMessage response = await client.PostAsJsonAsync("", scoreRequest).ConfigureAwait(false);
+            if (response.IsSuccessStatusCode)
+            {
+                string result = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine("Result: {0}", result);
+                p.ChurnYN = result;
+            }
+            ...
+        }
     }
-}
-```
+    ```
 
 - ![CloudBread Game User Chrun](images/20-5.png)  
 
