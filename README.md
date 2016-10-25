@@ -342,17 +342,16 @@ NoSQL에 적재된 데이터를 Big data 분석을 위해 Hadoop으로 적재하
 *13번 로그분석 - Big data / Hadoop* 에서 Table 저장소의 로그 분석을 Hadoop으로 수행하는 과정을 이미 진행  
 
 ###18. Stream Analytics API
-실시간 Machine Learning 분석 기법을 위해 API를 구현/Machine 
-Learning API와 통신하기 위한 환경 구성
+실시간 Machine Learning 분석 기법을 위해 API를 구현 / Machine Learning API와 통신하기 위한 환경 구성
 (CloudBread 에서 Stream Analytics 를 통하지 않고 즉시 비동기로 Machine Learning API를 호출 가능하도록 구성)
-최초 Machine Learning을 호출하기 위해 가이드 되는 방안으로, 기존 R에서 제공하는 여러 라이브러리들을 활용해 구축하는 방안에 대해 CloudBread ontributor 팀내부에서 협의 진행.  
-여러 조사를 하던 과정에서 최선의 real-time Machine Learning 예측 분석 방안을 고려했으나, Azure Machine Learning이 발표되고, 예측 모델(Predictive Model)을 클라우드 PaaS 기반으로 노출, 손쉽게 사용 가능한 방안을 제공.  
-이에 CloudBread Front-end에서 즉각적으로 Machine Learning으로의 호출이 가능해졌으며 Stream Analytics는 실시간 라이브 스트팀 데이터내의 Fraud Detection에서 활용.  
-**Stream Analytics API 적용 부분은 아래 Fraud Detection 기능 소개에서 함께 수행**
 
-참조링크 :  
-CloudBread의 고객 이탈 예측(Game user churn prediction) real-time prediction & Batch prediction   
-CloudBread의 게임내 아이템 추천(In-game item suggestion) real-time prediction & Batch prediction  
+최초 Machine Learning을 호출하기 위해 가이드 되는 방안으로, 기존 R에서 제공하는 여러 Machine Learning 라이브러리들을 활용해 구축하는 방안에 대해 CloudBread ontributor 팀내부에서 협의 진행.  
+최선의 real-time Machine Learning 예측 분석 방안을 협의 중에 Azure Machine Learning이 발표  
+
+예측 모델(Predictive Model)을 클라우드 PaaS 기반으로 노출, 손쉽게 사용 가능한 방안을 제공.  
+
+이에 CloudBread의 Front-end App Service에서 즉각적으로 Machine Learning으로의 Predict API 호출이 가능해졌으며 Stream Analytics는 실시간 라이브 스트팀 데이터내의 Fraud Detection에서만 활용.  
+**Stream Analytics API 및 분석 적용 부분은 아래 Fraud Detection 기능 소개에서 함께 수행**
 
 ###19. Data Factory
 Hadoop 에서 data pre-processing 및 automated data pipelining  
@@ -360,26 +359,31 @@ Hadoop 에서 data pre-processing 및 automated data pipelining
 big data 분석에서 ETL 도구로 사용되며, CloudBread의 경우 log 분석에 필요한 Hadoop인 HDInsight를 Data Factory 내에서 자동으로 provision/batch수행/결과를 다시 ETL에 올려 수행 과정을 활용 가능.  
 
 ###20. Machine Learning algorithm
-Machine Learning에서 데이터를 활용해 예측 분석 서비스가   가능하도록 학습시키기 위한 알고리듬 및 Machine Learning workflow 를 구현  
+Machine Learning에서 데이터를 활용해 예측 분석 서비스가 가능하도록 학습시키기 위한 알고리듬 및 Machine Learning workflow 를 구현  
 
-CloudBread Game User Chrun 공개 Machine Learning model  
-http://gallery.cortanaintelligence.com/Experiment/CloudBread-game-user-churn-prediction-1
+[CloudBread의 고객 이탈 예측(Game user churn prediction) real-time prediction & Batch prediction](https://gallery.cortanaintelligence.com/Experiment/CloudBread-game-user-churn-prediction-1)  
 
 ![CloudBread Game User Chrun](images/20-1.png)  
-CloudBread game item suggestion prediction 공개 Machine Learning model
-http://gallery.cortanaintelligence.com/Experiment/CloudBread-game-item-suggestion-prediction-1
 
-위의 모델은 모두 공개한 CloudBread Machine Learning의 분석 모델  
+[CloudBread의 게임내 아이템 추천(In-game item suggestion) real-time prediction & Batch prediction](https://gallery.cortanaintelligence.com/Experiment/CloudBread-game-item-suggestion-prediction-1)  
 
-목표 정의 :  
-이 분석모델을 활용해 예측모델(Predict model)을 구축하고 CloudBread를 통해 실시간 예측을 수행하는 것이 목표.
+위의 모델은 모두 공개된 CloudBread Machine Learning의 분석 모델  
+
+**예측 분석 목표 정의 :  **
+위의 공개한 분석모델을 활용해 예측모델(Predict model)을 구축하고 CloudBread의 API를 통해 실시간 예측을 수행하는 것이 목표.
 
 - CloudBread Machine Learning 모델을 생성하거나, 위의 gallery에서 복제  
+
 - ![CloudBread Game User Chrun](images/20-2.png)  
+
 - 모델을 실행하고, 수행된 예측 결과 확인
+
 - ![CloudBread Game User Chrun](images/20-3.png)  
+
 - Predictive model로 생성 후 API Web Service로 배포
+
 - ![CloudBread Game User Chrun](images/20-4.png)  
+
 - 생성된 Web service의 API Key를 이용해 CloudBread에서 real-time predict 수행
 
 ```
@@ -388,16 +392,18 @@ public class UserChurnController : ApiController
     // POST api/UserChurn
     public HttpResponseMessage POST(CBChurn p)
     {
-        // call ML function
+        // Machine Learning 분석 요청
         InvokeRequestResponseService(p).Wait();
         ...
     }
+    
+    // Machine Learning Web Service 호출
     static async Task InvokeRequestResponseService(CBChurn p)
     {
         ...
-        const string apiKey = "APIKey"; // Replace this with the API key for the web service
+        const string apiKey = "API키-수정"; // Replace this with the API key for the web service
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-        client.BaseAddress = new Uri("Machine-Learning-Web-Service-URL");
+        client.BaseAddress = new Uri("Machine-Learning-Web-Service-URL-수정");
         HttpResponseMessage response = await client.PostAsJsonAsync("", scoreRequest).ConfigureAwait(false);
         if (response.IsSuccessStatusCode)
         {
@@ -409,35 +415,46 @@ public class UserChurnController : ApiController
     }
 }
 ```
+
 - ![CloudBread Game User Chrun](images/20-5.png)  
+
 - Machine Learning API Controller를 publish 하고, Postman에서 테스트 수행해 real-time prediction 수행
 
-- Batch 분석 수행  
-Batch 작업을 수행하기 위해서 Machine Learning Batch execution이 제공하는 코드 이용이 가능.  
-![CloudBread Game User Chrun](images/20-6.png)  
-추가적으로, Functions를 이용해 server-less로 batch 호출 역시 가능  
-![CloudBread Game User Chrun](images/20-7.png)  
-Excel을 이용해 Batch 분석도 가능  
+- Batch 작업을 수행하기 위해서 Machine Learning Batch execution이 제공하는 코드 이용이 가능.  
 
-- In-game에서 게이머의 패턴과 특성을 취합해 학습 시킨 후 적절한 유료 아이템을 추천하는 시나리오 역시 게임 서비스에서 매우 중요한 매출과 직결되는 예측 분석  
-관련해 CloudBread는 predict model로 in-game item suggestion을 제공  
-Postman 및 소스코드 참조  
+- ![CloudBread Game User Chrun](images/20-6.png)  
 
-###Big data - Business Intelligence 플랫폼
-Hadoop에서 데이터를 visualize 시키기 위한 Business Intelligence 
-플랫폼 제공
+- 추가적으로, Functions를 이용해 server-less로 batch 호출 역시 가능  
+
+- ![CloudBread Game User Chrun](images/20-7.png)  
+
+- Excel을 이용해 Batch 분석도 가능  
+
+- In-game에서 게이머의 패턴과 특성을 취합해 학습 시킨 후 적절한 유료 아이템을 추천하는 시나리오 역시 게임 서비스에서 매우 중요한 매출과 직결되는 예측 분석이며, 관련해 CloudBread는 predict model로 *in-game item suggestion*을 제공  
+
+Postman collection 및 CloudBread-Machine-Learning소스코드 참조  
+
+###21. Big data - Business Intelligence 플랫폼
+Hadoop에서 데이터를 visualize 시키기 위한 Business Intelligence  
+상세한 Business Intelligence 내용은 *26. Real-time Business Intelligence 플랫폼*에서 제공  
 
 ###22. Big data - Business Intelligence 웹사이트
-Hadoop 데이터 분석 결과를 Web으로 display 시키기 위한 웹사이트 구축
+Hadoop 데이터 분석 결과를 Web으로 display 시키기 위한 웹사이트 구축  
+상세한 Business Intelligence 내용은 *26. Real-time Business Intelligence 플랫폼*에서 제공  
 
 ###23. Stream analytics pre-processing API
-실시간 분석을 위해 F/E로 접근하는 데이터를 stream 분석이 가능한 플랫폼에 올려 Stream Analytics로 실시간 분석하기 위해 로드하는 API를 구성하고, aggregation을 통해 실시간 분석이 가능한 데이터로 pre-processing 수행
+실시간 분석을 위해 F/E로 접근하는 데이터를 stream 분석이 가능한 플랫폼에 올려 Stream Analytics로 실시간 분석하기 위해 로드하는 API를 구성하고, aggregation을 통해 실시간 분석이 가능한 데이터로 pre-processing 수행  
+상세한 Stream Analytics 관련 내용은 아래 *###24. Stream analytics real-time analytics API* 참조
 
 ###24. Stream analytics real-time analytics API
 Stream Analytics에서 Fraud Detection이 가능하도록 구성  
-목표 : Stream Analytics에서 실시간으로 purchase API에 5초에 5회 이상 접속하는 어뷰징 사용자를 실시간으로 검출 수행  
-1. 일반적으로 요청하는 Normal-Device를 simulate하는 어플리케이션 수행
-2. 5초에 50여회 이상 요청하는 Fraud-Device를 simulate 하는 어플리케이션 수행
+
+**Fraud Detection 분석을 위한 Stream analytics 목표 :**  
+Stream Analytics에서 실시간으로 purchase API에 5초에 5회 이상 접속하는 어뷰징 사용자를 실시간으로 검출 수행  
+- 일반적으로 요청하는 Normal-Device를 simulate하는 어플리케이션 수행
+- 5초에 30여회 이상 요청하는 Fraud-Device를 simulate 하는 어플리케이션 수행
+- Stream 분석은 SQL 쿼리와 유사한 패턴으로 처리되며, CloudBread에서 다양한 Absing을 검출 가능
+
 ```
 while (i <= 50)
 {
@@ -467,7 +484,10 @@ while (i <= 50)
 EventHub 쪽으로 두개의 디바이스가 데이터를 push 하는 시뮬레이션 수행  
 
 Stream Anlytics에서 input을 통해 stream data를 가져와 처리  
-쿼리는 5초 이내에 5회 이상 요청이 들어온 경우 abuse로 판단해, 이 데이터를 fraudoutput blob 저장소로 출력 수행.
+아래의 Stream 쿼리는 5초 이내에 5회 이상 요청이 들어온 경우 abusing으로 판단해, 이 데이터를 fraudoutput blob 저장소로 출력 수행.  
+
+![Stream Analytics 분석](images/24-1.png)
+
 ```
 SELECT
     *
@@ -490,30 +510,41 @@ HAVING
 ```
 
 Stream Analytics를 실행하고, fraud device를 수행한 후, fraudoutput을 확인  
-필요할 경우 추가적인 event를 발생하거나 web hook을 보내 slack 등으로 메세지를 보내는 처리도 가능  
+
+필요할 경우 추가적인 event를 발생하거나 web hook을 보내 slack 등으로 메세지를 보내는 처리도 CloudBread에 적용 예정  
 
 ###25. Real-time Machine Learning workflow + API
-Real-time 분석을 위해 Stream Analytics와 Machine Learning 을 연계하기 위해 API 소비를 위한 function 개발  (CloudBread 에서 Stream Analytics 를 통하지 않고 즉시 비동기로 Machine Learning API를 호출 가능하도록 구성)
+Real-time 분석을 위해 Stream Analytics와 Machine Learning 을 연계하기 위해 API 소비를 위한 function 개발  
+(CloudBread 에서 Stream Analytics 를 통하지 않고 즉시 비동기로 Machine Learning API를 호출 가능하도록 구성)  
 
 ###26. Real-time Business Intelligence 플랫폼
 데이터를 visualize 시키기 위한 Business Intelligence 플랫폼 제공  
-게임마다 서버에서 필요한 property나 entity가 판이하게 다름. 즉, 단순 rank 서비스가 필요할 경우에는 item 로직 등을 서버에서 따로 사용할 이유나 필요가 없음. CloudBread를 이용할 경우에도 마찬가지로, Business Intelligence를 위한 시각화 역시, 개별 property가 워낙에 다르기 때문에 기본적인 빌딩 블록을 제시하고 게임 운영자가 이를 원하는 시각화로 배포 하는 것을 목표로 수행  
-이를 위해 Power BI를 이용해 시각화 모델을 만들고, 이를 웹에서 분석하거나 CloudBread 관리자 페이지에서 호출하는 것을 목표로 함.
+게임마다 서버에서 필요한 property나 entity가 다르기 때문에, 단순 rank 서비스가 필요할 경우에는 item 로직 등을 서버에서 따로 사용할 이유나 필요가 없음.  
+
+CloudBread를 이용할 경우에도 마찬가지로, Business Intelligence를 위한 시각화 역시, 개별 property가 워낙에 다르기 때문에 기본적인 빌딩 블록을 CloudBread에서 제시하고 CloudBread를 이용하는 게임서버 개발자가 이를 원하는 시각화로 배포 하는 것을 목표로 수행  
+
+이를 위해 Power BI를 이용해 시각화 모델을 만들고, 이를 웹에서 분석하거나 CloudBread 관리자 페이지에서 iframe 등으로 embed해 데이터 분석을 목표로 개발함.
+
 - Power BI Desktop을 이용한 시각화 디자인 수행
+
 - ![Power BI Data Visualization](images/27-1.png)  
+간단히 Hadoop에서 Hive로 생선한 결과를 로드하고, 시각화 과정을 통해 Bar-chart로 구현
+
 - Power BI를 Power BI 서비스로 배포
+
 - ![Power BI Data Visualization](images/27-2.png)  
+Power BI에 게시된 상태이기 때문에 팀에서 손쉬운 Report 를 공유하고 협업 가능
+
 - 생성한 Report를 CloudBread의 Admin-Web 등으로 게시하기 위해 embed 코드 생성
+
 - ![Power BI Data Visualization](images/27-3.png)  
+일반 웹페이지에 게시하는 과정을 수행하며, Link 방식과 Embed 방식 모두 제공
+
 - 생성된 리포트 데이터를 Admin-Web 또는 팀사이트 등에 게시
+
 - ![Power BI Data Visualization](images/27-4.png)  
+CloudBread-Admin-Web 관리자 페이지 등에 Interactive Report로 첨부가 가능
 
 ###27. Real-time Business Intelligence 웹사이트
 Real Time 분석 결과를 Web으로 display 시키기 위한 웹사이트 구축
-26번 참조
-
-
-
-
-
-
+관련 내용은 *26. Real-time Business Intelligence 플랫폼* 참조
