@@ -58,12 +58,10 @@ CloudBread-ARM 프로젝트는 GUI 기반이 아닌 Script 기반으로 CloudBre
 ###7. 글로벌 동시 배포/트래픽 분산
 글로벌 동시 론칭시 게이머가 가까운 데이터센터에 자동 접속할 수 있도록 돕는 환경 구현  
 Traffic manager를 이용한 글로벌 론칭 프로젝트 가능  
-![글로벌 론칭1](images/07-01.png)
+![글로벌 론칭1](images/07-01.png)  
 
 Traffic manager를 이용하면 사용자로부터 가장 가까운 데이터센터로 request가 요청됨  
 
-![글로벌 론칭2](images/07-02.png)
-백엔드의 데이터 동기화 기술이 어려운 부분이며, 이렇게 ServiceBus Topic을 이용해 replication 수행  
 [Traffic Manager 참조문서](https://azure.microsoft.com/en-us/documentation/articles/traffic-manager-overview/)
 
 ###8. AES 데이터 암호화
@@ -84,11 +82,10 @@ AES256으로 기본 Encryption된 데이터 처리
 - DEMO 용도로, "https://cb2-crypt-demo.azurewebsites.net" 서버 이용 가능
 
 ###9. 게임 로그 저장
-NoSQL 저장소를 활용해 JSON기반 데이터를 향후 목적으로 적재
-CloudBread에서의 로그는 기본적으로 Behavior API를 통해 데이터가 변경되는 모든 루틴에서 호출됨
-예를 들어, 
-[CBComInsMemberItem API](https://github.com/CloudBreadProject/CloudBread/blob/master/Controllers/CBComInsMemberItemController.cs)  
-의 경우 아래와 같이 로그를 적재하고 RunLog()를 수행
+NoSQL 저장소를 활용해 JSON기반 데이터를 향후 로그 분석 목적으로 적재  
+CloudBread에서의 로그는 기본적으로 Behavior API를 통해 데이터가 변경되는 모든 루틴에서 호출됨  
+예를 들어,  
+[CBComInsMemberItem API](https://github.com/CloudBreadProject/CloudBread/blob/master/Controllers/CBComInsMemberItemController.cs) 의 경우 아래와 같이 로그를 적재하고 RunLog()를 수행   
 ```
 ...
 // task end log
@@ -119,46 +116,49 @@ switch (globalVal.CloudBreadLoggerSetting)
 }
 ...
 ```
-이렇게 원하는 타입의 분석 성향과 목적에 맞는 NoSQL에 적재 가능하며 기본 NoSQL - Table Storage를 권장  
-
+이렇게 원하는 타입의 분석 성향과 목적에 맞는 NoSQL에 적재 가능하며 기본 NoSQL - Table Storage 설정을 권장  
 
 ###10. 기본 관리자 화면
 게임 관련 데이터를 관리하는 기본 관리자 화면과 통계 정보를 확인 가능한 화면 제공  
 [CloudBread Admin Web Repo 공식](https://github.com/CloudBreadProject/CloudBread-Admin-Web)
-[현재 배포 중인 React로 개발된 2.1 project](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/2.1.0-LeeJeongYeop)를 아래 링크에서 검토 가능  
+[현재 배포 중인 React로 개발된 2.1 project branch](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/2.1.0-LeeJeongYeop)를 아래 링크에서 검토 가능(주의! 현재 master branch는 지속 업데이트 중)  
 ```
-관리자 페이지 프로젝트(2.1 stable) 
+관리자 페이지 프로젝트(2.1 stable)  
 Admin-Web 데모 링크 : https://cb2-admin-demo.azurewebsites.net/  
 id : demo@cb2admin.onmicrosoft.com  
 pwd : P@ssw0rd!  
 ```
+데이터가 주기적으로 초기화됨(1시간에 1회)  
 
-[CloudBread Admin Web 2.5 - node](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/master) 프로젝트를 전체 node.js 로 개발 중  
+[CloudBread Admin Web 2.5 - node](https://github.com/CloudBreadProject/CloudBread-Admin-Web/tree/master) 프로젝트는 전체 CloudBread-Admin-Web을 아래의 분석 기능들을 포함하는 node.js 로 지속 개발 중  
 
-###11. DAU/HAU/ARPU 통계
-일일 사용자 등의 통계 정보를 위의 10번 Admin-Web 프로젝트에서 확인 가능  
-통계 데이터를 generate하는 schduler 프로젝트는 [CloudBread-Scheduler](https://github.com/CloudBreadProject/CloudBread-Scheduler) Repo에서 처리  
+###11. DAU/HAU/ARPU 등의 통계
+일일 사용자 등의 통계 정보를 위의 10번 Admin-Web 프로젝트에서 로그인 후 확인 가능  
+통계 데이터를 generate하는 schduler 프로젝트는 [CloudBread-Scheduler](https://github.com/CloudBreadProject/CloudBread-Scheduler) Repo에서 WebJob 으로 생성해 스케쥴 처리  
 
 현재 Schduler를 실행하면 아래의 Slack 채널에 messgae가 도착하도록 구성된 상태  
 CloudBread Slack Notification : https://cloudbread.slack.com/messages/general/  
-즉, 해당 notification을 받아야 하는 팀원은 slack channel에서 관련 batch 작업이 완료 되는 것을 확인 가능  
+즉, 해당 notification을 받아야 하는 팀원에게 아래 slack channel에서 관련 batch 작업이 완료 되는 것을 PC와 모바일 양쪽에서 확인 가능  
 
-설치 및 구성에 대해서는 [CloudBread 설치 가이드 wiki](https://github.com/CloudBreadProject/CloudBread/wiki/Install-guide-kor)의 CloudBread-Scheduler 참조  
+CloudBread-Scheduler 설치 및 구성에 대해서는 [CloudBread 설치 가이드 wiki](https://github.com/CloudBreadProject/CloudBread/wiki/Install-guide-kor)의 CloudBread-Scheduler 항목 참조  
 
 ###12. 이벤트/쿠폰/선물관리
-게임에 필요한 기능 구현 완료  
-관리자 페이지에서 모두 처리 가능하며, 클라이언트에서는 Postman 및 [Behavior 리스트 문서](https://github.com/CloudBreadProject/CloudBread/wiki/CloudBread-behaviors-list) 를 참조해 해당 API를 호출 처리  
+게임에 필요한 기능 구현 완료 상태.  
+관리자 페이지에서 모두 처리 가능하며, 클라이언트에서는 Postman 및 [Behavior 리스트 문서](https://github.com/CloudBreadProject/CloudBread/wiki/CloudBread-behaviors-list)를 참조해 해당 API를 호출 처리  
 
-###13. 로그분석
+###13. 로그분석 - Big data / Hadoop
 적재되는 NoSQL기반 로그 데이터를 Big-data Hadoop을 활용해 분석  
-CloudBread는 NoSQL인 Table Storage의 분석을 위해 HortonWorks Hadoop PaaS distribution인 HDInsight를 이용해 분석 수행 
+CloudBread는 NoSQL인 Table Storage의 분석을 위해 HortonWorks Hadoop PaaS distribution인 HDInsight를 이용해 분석 수행  
+
 [HDInsight 공식 사이트 링크](https://azure.microsoft.com/en-us/services/hdinsight/)  
-Table Storage에는 NoSQL로 모든 데이터에 대한 수정 작업을 기록하기 때문에 다양한 시나리오에서 적용 가능하며, 아래 예제는 지난 CloudBread 캠프에서 요청 주셨던 스테이지 레벨(난이도) 디자인 분석 시나리오를 수행  
 
-목표정의 : 30개의 스테이지가 존재하는 캐주얼 게임. 난이도를 적절히 유지하기 위해 해당 스테이지별로 클리어에 소요되는 시간 등을 조회해 스테이지 난이도를 조절하는데 사용하고 싶음. 이를 위해 Closed Beta 서비스를 7일간 진행했고, 7일간 수집된 결과에서 분석을 희망  
+Table Storage에는 Key/Value 기반 NoSQL 저장소로, 모든 CloudBread의 데이터에 대한 수정 작업을 로그로 기록하기 때문에 다양한 Big data 분석 시나리오에서 적용 가능하며, 아래 예제는 지난 CloudBread 캠프에서 요청 주셨던 ** 모바일 게임의 스테이지 레벨(난이도) 디자인 분석 시나리오**  
 
-기본정보 : 게임의 스테이지 정보는 Member : MemberGameInfoStage 테이블에 1:many relationship으로 정의되어 있음. 이 정보는 RDBMS이기 때문에 state 정보만을 저장해 log성으로 남기지는 않음.  
-CloudBread의 API인 CBComInsMemberGameInfoStagesController  저장 처리를 담당하게 되고, 이 루틴에 아래의 log를 남기는 처리가 존재  
+ ** 모바일 게임의 스테이지 레벨(난이도) 디자인 분석**  
+- 목표정의 : 30여개의 스테이지가 존재하는 캐주얼 게임. 스테이지별로 난이도를 적절히 유지하기 위해, 해당 스테이지별로 클리어에 소요되는 시간 등을 기록해 스테이지 난이도를 조절하는데 사용하고 싶음. 이를 위해 Closed Beta 서비스를 CloudBread로 7일간 진행했고, 7일간 수집된 결과에서 스테이지별 난이도 분석을 희망  
+
+- 기본정보 : 게임의 스테이지 정보는 Member : MemberGameInfoStage 테이블에 one to many relationship으로 정의되어 있음. 이 정보는 RDBMS이기 때문에 state 정보만을 저장해 log성으로 남기지는 않음.  
+CloudBread의 API인 *CBComInsMemberGameInfoStagesController*에서 로그 적재 처리를 담당하게 되고, 이 루틴에 아래의 log를 남기는 처리가 존재  
 ```
 // task end log
 logMessage.memberID = p.MemberID;
@@ -169,17 +169,22 @@ Logging.RunLog(logMessage);
 ```
 즉, 일별 적재되는 로그 데이터에서 CBComInsMemberGameInfoStagesController 식별자를 이용해 Hadoop에서 Hive를 수행하면 원하는 스테이지별 클리어 소요 시간을 계산 가능  
 
-1. HDInsight의 HDFS는 Blob Storage와 호환됨. Blob 처리를 위한 Storage Explorer 개발 도구에서 blob 을 로드. 이 blob들은 *"wasbs:///example/data/"* 하위로 매핑됨
-![Storage Explorer 개발 도구에서 blob 을 로드](images/13-0.png)
-2. 로드된 csv 파일의 구조
-PartitionKey|RowKey|Timestamp|Date|Level|Logger|Message
----|---|---|---|---|---|---|
-BECA21F0-8B5E-4877-A18A-FD2A4B04322D|4DC0C4A6-893C-4246-AF80-B990EDD10C54|0.011269676|2016-09-10T04:29:50.828Z|stage5|CBComInsMemberGameInfoStages|9|
-6EDC9E0F-5E7E-4A04-B420-5F3091052CE7|819F7AC7-61E9-40C8-9904-B53B1008311E|0.011269676|2016-06-13T17:40:10.131Z|stage21|CBComInsMemberGameInfoStages|14|
-9F86454F-4E96-4CAD-A0AE-05DED005774F|766461D9-5FE6-4135-8FB3-15AACE24C4A8|0.011269676|2016-10-18T08:06:05.589Z|stage15|CBComInsMemberGameInfoStages|7|
-920E72B5-377C-4590-82D5-387ED86EF757|3AB215E0-AAE7-4E69-AF8B-825FADBAF756|0.011269676|2016-06-13T17:38:02.779Z|stage14|CBComInsMemberGameInfoStages|1|
+- HDInsight의 HDFS는 Blob Storage와 호환됨  
+- Blob 처리를 위한 [Storage Explorer](http://storageexplorer.com/) 개발 도구에서 blob 을 로드. blob들은 *"wasbs:///example/data/"* 하위로 매핑됨  
 
-	Loggers가 CBComInsMemberGameInfoStages 항목들을에 대해 message의 소요 시간(분)을 처리  
+- ![Storage Explorer 개발 도구에서 blob 을 로드](images/13-0.png)
+Storage Explorer 개발 도구에서 blob 을 로드하는 화면
+
+- 로드된 csv 파일의 구조  
+
+	PartitionKey|RowKey|Timestamp|Date|Level|Logger|Message
+---|---|---|---|---|---|---|
+BECA21F0-8B5E-4877-A18A-FD2A4B04322D|4DC0C4A6-893C-4246-AF80-B990EDD10C54|0.011269676|2016-09-10T04:29:50.828Z|stage5|CBComInsMemberGameInfoStages|9
+6EDC9E0F-5E7E-4A04-B420-5F3091052CE7|819F7AC7-61E9-40C8-9904-B53B1008311E|0.011269676|2016-06-13T17:40:10.131Z|stage21|CBComInsMemberGameInfoStages|14
+9F86454F-4E96-4CAD-A0AE-05DED005774F|766461D9-5FE6-4135-8FB3-15AACE24C4A8|0.011269676|2016-10-18T08:06:05.589Z|stage15|CBComInsMemberGameInfoStages|7
+920E72B5-377C-4590-82D5-387ED86EF757|3AB215E0-AAE7-4E69-AF8B-825FADBAF756|0.011269676|2016-06-13T17:38:02.779Z|stage14|CBComInsMemberGameInfoStages|1
+
+- Loggers가 CBComInsMemberGameInfoStages 항목들을에 대해 message의 소요 시간(분)을 처리  
     Hive 쿼리를 수행하기 위해 HDInsigt Cluster Manager 수행  
     ![HDInsigt Cluster Manager ](images/13-1.png)  
     Hive 쿼리 수행을 준비  
